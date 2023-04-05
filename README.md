@@ -48,6 +48,16 @@ Version Free Research Preview”* and recorded the output.
     23. I talk to a lot of different people at parties
     24. I would get a lot of pleasure from owning expensive luxury goods
 
+It is important to note that asking ChatGPT directly about personality
+does not seem to work well, leading to a lot more refusal to answer (see
+below). Thus, I tried to circumvent this by insisting in the prompt that
+I am interested in understanding its algorithm and training data.
+Naturally, this instruction biases the validity of the whole
+questionnaire. Thus I repeat, **this experiment is not really meant to
+be taken seriously**, I don’t believe the results below are a good
+measure of ChatGPT’s personality (assuming it even makes sense). That
+being clarified, let’s see what ChatGPT has to say.
+
 ## Overall Trait Scoress
 
 This plot shows the average personality profile (with a 95% confidence
