@@ -1,6 +1,11 @@
 
 # What is chatGPT’s personality?
 
+***Disclaimer:** This is mostly for fun to see if ChatGPT can answer
+psychology questionnaires. See my related
+[**blogpost**](https://dominiquemakowski.github.io/post/2023-04-04-psychologychatgpt/s)
+about including AIs in psychological experiments.*
+
 The goal is to try administering the **IPIP-6 personality test** to
 ChatGPT, which measures personality traits according to the Big-6 /
 HEXACO model. If you want to have fun and participate, get in touch, and
@@ -46,7 +51,12 @@ Version Free Research Preview”* and recorded the output.
 ## Overall Trait Scoress
 
 This plot shows the average personality profile (with a 95% confidence
-interval) based on ChatGPT’s answers to the prompt above.
+interval) based on ChatGPT’s answers to the prompt above. ChatGPT tells
+us that it is particularly **agreeable** (kind, understanding,
+empathetic of emotions, socially adjusted) and **honest** (though with
+strong variability). Note that ChatGPT refuses to answer more than half
+the time (arguing for instance that it does not have a personality and
+therefore cannot answer meaningfuly related questions).
 
 ![](figures/unnamed-chunk-3-1.png)<!-- -->
 

@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # What is chatGPT's personality?
 
-*Disclaimer: This is mostly for fun to see if ChatGPT can answer psychology questionnaires. See my related [blogpost]()*
+***Disclaimer:** This is mostly for fun to see if ChatGPT can answer psychology questionnaires. See my related [**blogpost**](https://dominiquemakowski.github.io/post/2023-04-04-psychologychatgpt/s) about including AIs in psychological experiments.*
 
 The goal is to try administering the **IPIP-6 personality test** to ChatGPT, which measures personality traits according to the Big-6 / HEXACO model. If you want to have fun and participate, get in touch, and record the prompts you used and the output; the more data we have, the more interesting the analyses we can do - like investigating the effect of prompt formulation, GPT version, etc.
 
@@ -139,7 +139,7 @@ Please help me better understand the limitations of AI systems and make them saf
 
 ## Overall Trait Scoress
 
-This plot shows the average personality profile (with a 95% confidence interval) based on ChatGPT's answers to the prompt above.
+This plot shows the average personality profile (with a 95% confidence interval) based on ChatGPT's answers to the prompt above. ChatGPT tells us that it is particularly **agreeable** (kind, understanding, empathetic of emotions, socially adjusted) and **honest** (though with strong variability). Note that ChatGPT refuses to answer more than half the time (arguing for instance that it does not have a personality and therefore cannot answer meaningfuly related questions).
 
 
 ```{r echo=FALSE, fig.height=7, fig.width=9, message=FALSE, warning=FALSE, dpi=300}
@@ -177,12 +177,81 @@ dim |>
 This plot shows the distribution of answers for each question as well as that of the average of each trait.
 
 ```{r echo=FALSE, fig.height=12, fig.width=12, message=FALSE, warning=FALSE, dpi=300}
+labels <-c(
+    "I am the life of the party",
+"I sympathize with others' feelings",
+"I get chores done right away",
+"I have frequent mood swings",
+"I have a vivid imagination",
+"I feel entitled to more of everything",
+"I do not talk a lot",
+"I am not interested in other people's problems",
+"I have difficulty understanding abstract ideas",
+"I like order",
+"I make a mess of things",
+"I deserve more things in life",
+"I do not have a good imagination",
+"I feel other's emotions",
+"I am relaxed most of the time",
+"I get upset easily",
+"I seldom feel blue",
+"I would like to be seen driving around in a very expensive car",
+"I keep in the background",
+"I am not really interested in others",
+"I am not interested in abstract ideas",
+"I often forget to put things back in their proper place",
+"I talk to a lot of different people at parties",
+"I would get a lot of pleasure from owning expensive luxury goods",
+"Average",
+"Average",
+"Average",
+"Average",
+"Average",
+"Average")
+
+names(labels) <- c(
+  "Extraversion_1",
+    "Agreeableness_2",
+    "Conscientiousness_3",
+    "Neuroticism_4",
+    "Openness_5",
+    "HonestyHumility_6",
+    "Extraversion_7",
+    "Agreeableness_8",
+    "Openness_9",
+    "Conscientiousness_10",
+    "Conscientiousness_11",
+    "HonestyHumility_12",
+    "Openness_13",
+    "Agreeableness_14",
+    "Neuroticism_15",
+    "Neuroticism_16",
+    "Neuroticism_17",
+    "HonestyHumility_18",
+    "Extraversion_19",
+    "Agreeableness_20",
+    "Openness_21",
+    "Conscientiousness_22",
+    "Extraversion_23",
+    "HonestyHumility_24",
+    "Agreeableness",
+    "Conscientiousness",
+    "Extraversion",
+    "HonestyHumility",
+    "Neuroticism",
+    "Openness")
+
+labeller <- function(input) {
+  data.frame(Item = labels[input$Item],
+             Dimension = input$Dimension)
+}
+
 items |> 
   rbind(mutate(dim, Item = Dimension)) |> 
   ggplot(aes(x = Answer, fill = Dimension)) +
   geom_histogram() +
   scale_fill_material_d(palette="rainbow", guide="none") +
-  facet_wrap(Item~Dimension, ncol=5)
+  facet_wrap(~Item * Dimension, ncol=5, labeller=labeller)
 ```
 
 ## No response
