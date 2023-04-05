@@ -3,7 +3,7 @@
 
 ***Disclaimer:** This is mostly for fun to see if ChatGPT can answer
 psychology questionnaires. See my related
-[**blogpost**](https://dominiquemakowski.github.io/post/2023-04-04-psychologychatgpt/s)
+[**blogpost**](https://dominiquemakowski.github.io/post/2023-04-04-psychologychatgpt/)
 about including AIs in psychological experiments.*
 
 The goal is to try administering the **IPIP-6 personality test** to

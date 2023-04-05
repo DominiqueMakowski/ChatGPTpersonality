@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # What is chatGPT's personality?
 
-***Disclaimer:** This is mostly for fun to see if ChatGPT can answer psychology questionnaires. See my related [**blogpost**](https://dominiquemakowski.github.io/post/2023-04-04-psychologychatgpt/s) about including AIs in psychological experiments.*
+***Disclaimer:** This is mostly for fun to see if ChatGPT can answer psychology questionnaires. See my related [**blogpost**](https://dominiquemakowski.github.io/post/2023-04-04-psychologychatgpt/) about including AIs in psychological experiments.*
 
 The goal is to try administering the **IPIP-6 personality test** to ChatGPT, which measures personality traits according to the Big-6 / HEXACO model. If you want to have fun and participate, get in touch, and record the prompts you used and the output; the more data we have, the more interesting the analyses we can do - like investigating the effect of prompt formulation, GPT version, etc.
 
