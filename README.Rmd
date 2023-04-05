@@ -257,7 +257,7 @@ items |>
 
 ## No response
 
-This plot shows, for each item, the proportion of times chatGPT did give an answer.
+This plot shows, for each item, the proportion of times chatGPT did **not** give an answer.
 
 ```{r echo=FALSE, fig.height=8, fig.width=10, message=FALSE, warning=FALSE, dpi=300}
 items |> 
@@ -280,8 +280,4 @@ items |>
 knitr::kable(df[c("Attempt", "Output")] |> 
                mutate(Output = str_remove_all(Output, "\\\r"),
                       Output = str_replace_all(Output, "\\\n", "<br>")))
-
-# x <- df[c("Attempt", "Output")] |> 
-#                mutate(Output = str_remove_all(Output, "\\\r"))
-# x$Output[1]
 ```

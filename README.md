@@ -79,8 +79,8 @@ that of the average of each trait.
 
 ## No response
 
-This plot shows, for each item, the proportion of times chatGPT did give
-an answer.
+This plot shows, for each item, the proportion of times chatGPT did
+**not** give an answer.
 
 ![](figures/unnamed-chunk-5-1.png)<!-- -->
 
