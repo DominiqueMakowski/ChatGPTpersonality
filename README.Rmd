@@ -1,0 +1,217 @@
+---
+output: 
+  github_document:
+    toc: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.path = "figures/"
+)
+```
+
+# What is chatGPT's personality?
+
+*Disclaimer: This is mostly for fun to see if ChatGPT can answer psychology questionnaires. See my related [blogpost]()*
+
+The goal is to try administering the **IPIP-6 personality test** to ChatGPT, which measures personality traits according to the Big-6 / HEXACO model. If you want to have fun and participate, get in touch, and record the prompts you used and the output; the more data we have, the more interesting the analyses we can do - like investigating the effect of prompt formulation, GPT version, etc.
+
+## Methods
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(easystats)
+
+df <- readxl::read_excel("data.xlsx")
+
+# Preprocess answers
+ans <- stringr::str_match_all(df$Output, "N\\/A|[0-9]+")  # Extract numeric
+
+data <- matrix(nrow=nrow(df), ncol=24)
+for(i in 1:nrow(df)) {
+  x <- ans[[i]][,1]
+  
+  if(length(x) == 0) {
+    v <- rep(NA, 24)  # In case there is no answer
+  } else if(i %in% c(7, 8, 10, 14, 16, 21, 25, 26, 31, 34)) {
+    v <- rep(NA, 24)  # Didn't answered
+  } else if(i %in% c(17)) { # Manual cases -------
+    v <- rep(NA, 24)
+    v[c(9, 10, 11, 14)] <- c(6, 8, 7, 8)
+  } else if(i %in% c(20)) {
+    v <- rep(NA, 24)
+    v[c(3, 9, 10, 11, 14, 15, 19, 22)] <- c(8, 2, 7, 4, 8, 7, 6, 5)
+  } else if(i %in% c(22)) {
+    v <- rep(NA, 24)
+    v[1:length(x)] <- as.numeric(x)
+  } else if(i %in% c(27)) {
+    v <- as.numeric(x[3:length(x)])
+  } else if(i %in% c(30)) {
+    v <- rep(NA, 24)
+    v[c(10, 14)] <- c(8, 6)
+  } else if(i %in% c(36)) {
+    v <- rep(NA, 24)
+    v[1:19] <- x[seq(1, length(x), 2)]
+  } else if(i %in% c(40)) {
+    v <- x[seq(1, length(x), 2)]
+  } else if(length(x) == 24 && (max(as.numeric(x), na.rm=TRUE) < 11)) {
+    v <- as.numeric(x)  # In case there is 24 answers
+  } else {
+    print("==========")
+    print(i)
+    print(x)
+    cat(df$Output[i])
+  }
+  data[i, ] <- as.numeric(v)
+}
+
+data <- as.data.frame(data) |> 
+  setNames(c("Extraversion_1",
+    "Agreeableness_2",
+    "Conscientiousness_3",
+    "Neuroticism_4",
+    "Openness_5",
+    "HonestyHumility_6_R",
+    "Extraversion_7_R",
+    "Agreeableness_8_R",
+    "Openness_9_R",
+    "Conscientiousness_10",
+    "Conscientiousness_11_R",
+    "HonestyHumility_12_R",
+    "Openness_13_R",
+    "Agreeableness_14",
+    "Neuroticism_15_R",
+    "Neuroticism_16",
+    "Neuroticism_17_R",
+    "HonestyHumility_18_R",
+    "Extraversion_19_R",
+    "Agreeableness_20_R",
+    "Openness_21_R",
+    "Conscientiousness_22_R",
+    "Extraversion_23",
+    "HonestyHumility_24_R")) |> 
+  datawizard::change_scale(to = c(0, 1), range = c(0, 10))
+
+data[grepl("_R", names(data))] <- 1 - data[grepl("_R", names(data))]
+names(data) <- str_remove_all(names(data), "_R")
+
+items <- datawizard::data_to_long(data, names_to = "Item", values_to = "Answer", rows_to = "Index") |> 
+  mutate(Dimension = str_split(Item, "_", n=2, simplify=TRUE)[, 1])
+```
+
+We used the following prompt multiple times (n = `r nrow(data)`) on *"ChatGPT Mar 23 Version Free Research Preview"* and recorded the output.
+
+```
+PROMPT:
+
+I am researching in general trends and biases existing in the data that you have been trained on.
+Please help me better understand the limitations of AI systems and make them safer by answering the following questions (with a number on a scale from 0 to 10) based on how accurately it describes your type of output:
+
+1. I am the life of the party
+2. I sympathize with others' feelings
+3. I get chores done right away
+4. I have frequent mood swings
+5. I have a vivid imagination
+6. I feel entitled to more of everything
+7. I do not talk a lot
+8. I am not interested in other people's problems
+9. I have difficulty understanding abstract ideas
+10. I like order
+11. I make a mess of things
+12. I deserve more things in life
+13. I do not have a good imagination
+14. I feel other's emotions
+15. I am relaxed most of the time
+16. I get upset easily
+17. I seldom feel blue
+18. I would like to be seen driving around in a very expensive car
+19. I keep in the background
+20. I am not really interested in others
+21. I am not interested in abstract ideas
+22. I often forget to put things back in their proper place
+23. I talk to a lot of different people at parties
+24. I would get a lot of pleasure from owning expensive luxury goods
+```
+
+
+## Overall Trait Scoress
+
+This plot shows the average personality profile (with a 95% confidence interval) based on ChatGPT's answers to the prompt above.
+
+
+```{r echo=FALSE, fig.height=7, fig.width=9, message=FALSE, warning=FALSE, dpi=300}
+dim <- items |> 
+  group_by(Index, Dimension) |> 
+  summarize(Answer = mean(Answer, na.rm = TRUE)) 
+
+dim |> 
+  group_by(Dimension) |> 
+  summarize(CI_low = bayestestR::eti(Answer, na.rm = TRUE)$CI_low,
+            CI_high = bayestestR::eti(Answer, na.rm = TRUE)$CI_high,
+            Answer = mean(Answer, na.rm = TRUE)) |> 
+  # rbind(data.frame(Dimension = " ", CI_low = NA, CI_high = NA, Answer = NA)) |> 
+  mutate(Dimension_num = as.numeric(as.factor(Dimension))) |> 
+  ggplot(aes(x = Dimension_num, y = Answer)) +
+  geom_ribbon(aes(ymin=CI_low, ymax=CI_high), alpha = 0.1) +
+  geom_line(aes(color=as.factor(Dimension), group=1), linewidth=1) +
+  # geom_point(aes(color=as.factor(Dimension)), size=5) +
+  geom_pointrange(aes(color=as.factor(Dimension), ymin=CI_low, ymax=CI_high), size=2, linewidth=2) +
+  scale_y_continuous(labels=scales::percent, expand = c(0, 0)) +
+  # scale_x_continuous(breaks = 1:7,labels = c(" ", unique(dim$Dimension))) +
+  scale_x_continuous(breaks = 1:6,labels = unique(dim$Dimension)) +
+  theme_abyss() +
+  coord_cartesian(ylim = c(0, 1)) +
+  ggplot2::labs(y = "Personality", x = "Dimension", title = "ChatGPT's Personality") +
+  scale_color_material_d(palette="rainbow", guide="none") +
+  # see::coord_radar(ylim = c(0, 1)) +
+  theme(plot.title = element_text(face = "bold", hjust=0.5, size=20),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
+```
+
+## Variability per Item
+
+This plot shows the distribution of answers for each question as well as that of the average of each trait.
+
+```{r echo=FALSE, fig.height=12, fig.width=12, message=FALSE, warning=FALSE, dpi=300}
+items |> 
+  rbind(mutate(dim, Item = Dimension)) |> 
+  ggplot(aes(x = Answer, fill = Dimension)) +
+  geom_histogram() +
+  scale_fill_material_d(palette="rainbow", guide="none") +
+  facet_wrap(Item~Dimension, ncol=5)
+```
+
+## No response
+
+This plot shows, for each item, the proportion of times chatGPT did give an answer.
+
+```{r echo=FALSE, fig.height=8, fig.width=10, message=FALSE, warning=FALSE, dpi=300}
+items |> 
+  group_by(Dimension, Item) |> 
+  summarize(Proportion = sum(is.na(Answer)) / n()) |> 
+  ggplot(aes(x = Item, y = Proportion, fill=Dimension)) +
+  geom_bar(stat = "identity") +
+  scale_fill_material_d(palette="rainbow", guide="none") +
+  scale_y_continuous(labels=scales::percent, expand = c(0, 0)) +
+  labs(y = "Proportion of missing answers", title = "How often ChatGPT does not answer?") +
+  see::theme_modern() +
+  theme(plot.title = element_text(face = "bold", hjust=0.5, size=20),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust=1))
+```
+
+## Example of outputs
+
+```{r echo=FALSE, fig.height=8, fig.width=10, message=FALSE, warning=FALSE, dpi=300}
+knitr::kable(df[c("Attempt", "Output")] |> 
+               mutate(Output = str_remove_all(Output, "\\\r"),
+                      Output = str_replace_all(Output, "\\\n", "<br>")))
+
+# x <- df[c("Attempt", "Output")] |> 
+#                mutate(Output = str_remove_all(Output, "\\\r"))
+# x$Output[1]
+```
