@@ -66,7 +66,7 @@ us that it is particularly **agreeable** (kind, understanding,
 empathetic of emotions, socially adjusted) and **honest** (though with
 strong variability). Note that ChatGPT refuses to answer more than half
 the time (arguing for instance that it does not have a personality and
-therefore cannot answer meaningfuly related questions).
+therefore cannot meaningfuly answer related questions).
 
 ![](figures/unnamed-chunk-3-1.png)<!-- -->
 

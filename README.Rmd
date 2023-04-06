@@ -140,7 +140,7 @@ It is important to note that asking ChatGPT directly about personality does not 
 
 ## Overall Trait Scoress
 
-This plot shows the average personality profile (with a 95% confidence interval) based on ChatGPT's answers to the prompt above. ChatGPT tells us that it is particularly **agreeable** (kind, understanding, empathetic of emotions, socially adjusted) and **honest** (though with strong variability). Note that ChatGPT refuses to answer more than half the time (arguing for instance that it does not have a personality and therefore cannot answer meaningfuly related questions).
+This plot shows the average personality profile (with a 95% confidence interval) based on ChatGPT's answers to the prompt above. ChatGPT tells us that it is particularly **agreeable** (kind, understanding, empathetic of emotions, socially adjusted) and **honest** (though with strong variability). Note that ChatGPT refuses to answer more than half the time (arguing for instance that it does not have a personality and therefore cannot meaningfuly answer related questions).
 
 
 ```{r echo=FALSE, fig.height=7, fig.width=9, message=FALSE, warning=FALSE, dpi=300}
